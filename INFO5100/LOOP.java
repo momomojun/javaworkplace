@@ -9,14 +9,14 @@ public class LOOP {
     //A row == B col
     //need float?
     public static int checkmatrices(int[][] matrixA, int[][] matrixB){
-        int lengthA = matrixA[0].length;
-        int lengthB = matrixB.length;
+        int lengthA = matrixA.length;
+        int lengthB = matrixB[0].length;
         if(lengthA == lengthB){
-            System.out.println("It is a real matrices,go on!");
+            System.out.println("It is a real matrices mutiply,go on!");
             return 1;
         }
         else{
-            System.out.println("It is not a real matrices, please try again.");
+            System.out.println("It is not a real matrices mutiply, please try again.");
             return -1;
         }
     }

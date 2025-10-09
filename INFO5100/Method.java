@@ -16,7 +16,6 @@ public class Method {
         String[] result = new String[numlength];
         //char tempchar;
         //String tempname;
-        
         for(i = 0; i < numlength; i++){
             result[i] = "";
             int stringlength = name[i].length();
@@ -54,9 +53,9 @@ public class Method {
         }
         else if(type == 2){
             System.out.println("Resultant array:");
-            for(int i = name.length - 1; i >= 0; i--){
+            for(int i = 0; i < name.length; i++){
                 System.out.print("\"" + name[i] + "\"");
-                if(i != 0){
+                if(i != name.length - 1){
                     System.out.println(",");
                 }
                 else{
@@ -67,6 +66,15 @@ public class Method {
         System.out.println("End of the array");
         System.out.println();
     }
+    // inverseorder
+    public static String[] inverseorder(String[] name){
+        String[] result = new String[name.length];
+        int j = name.length;
+        for(int i = 0; i < name.length; i++){
+            result[i] = name[--j];
+        }
+        return result;
+    }
     
     //process
     public static void process(String[] name){
@@ -74,6 +82,7 @@ public class Method {
         temp = name.clone();
         name = inversearray(name);
         name = lowerupper(name);
+        name = inverseorder(name);
         outputString(temp, 1);
         outputString(name, 2);
     }
