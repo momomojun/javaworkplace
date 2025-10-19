@@ -57,6 +57,9 @@ public class App {
             // It is a short/medium/long word
             // The length of the word is Y
             // Your reaction time is Z seconds
+            // Calculate reaction time in seconds
+            // we need to divide by 1000.0 to get a double value
+            // if we divide by 1000, it will be an integer division
             double reactionTime = (endTime - startTime) / 1000.0;
             System.out.println("Your word is " + input);
             System.out.println("It is a " + wordLengthLevel + " word");
