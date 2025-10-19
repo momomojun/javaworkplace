@@ -43,13 +43,13 @@ public class App {
             System.out.println("You did not enter any word");
         } else {
             int length = input.length();
-            String classification;
+            String wordLengthLevel = "";
             if (length <= 5) {
-                classification = "short";
+                wordLengthLevel = "short";
             } else if (length <= 10) {
-                classification = "medium";
-            } else {
-                classification = "long";
+                wordLengthLevel = "medium";
+            } else if (length > 10){
+                wordLengthLevel = "long";
             }
             // Q4: If you entered word is not empty, the program output consists of four
             // lines as follows:
@@ -59,7 +59,7 @@ public class App {
             // Your reaction time is Z seconds
             double reactionTime = (endTime - startTime) / 1000.0;
             System.out.println("Your word is " + input);
-            System.out.println("It is a " + classification + " word");
+            System.out.println("It is a " + wordLengthLevel + " word");
             System.out.println("The length of the word is " + length);
             System.out.printf("Your reaction time is %.2f seconds%n", reactionTime);
         }
