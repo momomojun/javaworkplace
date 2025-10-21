@@ -5,3 +5,4 @@ MOMO
 MOMO
 MOMO
 MOMO
+Java write test
