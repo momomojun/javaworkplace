@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Locale;
 
 // we implement Runnable so that it can run on a separate thread.
 // each ClientHandler instance handles one client's connection.

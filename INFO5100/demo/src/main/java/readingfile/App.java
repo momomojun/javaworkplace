@@ -91,10 +91,9 @@ public class App {
         System.out.println("\nRead record -> ID: " + id + ", Name: " + name + ", Grade: " + grade);
 
         // Q5: Modify the record in the Java program.
+        // Update the appropriate record in the database.
         System.out.println("\nEnter new grade for this student:");
         int newGrade = scanner.nextInt();
-
-        // Q6: Update the appropriate record in the database.
         String updateSQL = "UPDATE students SET grade = ? WHERE id = ?";
         PreparedStatement pstmt = conn.prepareStatement(updateSQL);
         pstmt.setInt(1, newGrade);
@@ -107,7 +106,7 @@ public class App {
         System.out.println("New record -> ID: " + rs2.getInt("id") + ", Name: " + rs2.getString("name") + ", Grade: "
                 + rs2.getInt("grade"));
 
-        // Q7:Make sure you restore (rollback) the previous information in the database
+        // Q6:Make sure you restore (rollback) the previous information in the database
         // to continue your database class assignments
         System.out.println("\nRolling back changes...");
         conn.rollback();
