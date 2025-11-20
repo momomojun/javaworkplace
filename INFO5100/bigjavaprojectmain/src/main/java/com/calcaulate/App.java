@@ -17,6 +17,9 @@ public class App extends JFrame {
     private DefaultTableModel rawModel;    // 左边：原始数据
     private DefaultTableModel sortedModel; // 右边：排序数据
 
+    // 新增capacity变量，用来衡量我们所拥有的时间，作出限制
+    private JTextField tCapacity;
+
     public App() {
         setTitle("RICE+S Task Manager");
         setSize(1200, 700); 
@@ -45,6 +48,20 @@ public class App extends JFrame {
         // 按钮 3: Chart (橙色)
         JButton btnChart = new JButton(" Chart ");
         styleButton(btnChart, new Color(255, 140, 0)); 
+        
+
+        //新增capacity
+        topPanel.add(new JLabel("| Cap:"));
+        //添加容量输入框 (默认 40)
+        tCapacity = new JTextField("40");
+        tCapacity.setPreferredSize(new Dimension(40, 25));
+        topPanel.add(tCapacity);
+        //添加 Auto-Plan 按钮 (紫色)
+        JButton btnPlan = new JButton(" Auto-Plan ");
+        styleButton(btnPlan, new Color(111, 66, 193));
+        btnPlan.addActionListener(e -> runKnapsackPlanning()); // 绑定点击事件
+        topPanel.add(btnPlan);
+
 
         // 按钮 4: About (蓝色)
         JButton btnInfo = new JButton(" About ");
@@ -178,8 +195,79 @@ public class App extends JFrame {
             "<p><b>(E) Effort:</b> Time cost (Person-Days)</p>" +
             "</body></html>";
         
-        // 修改点：这里改成了 PLAIN_MESSAGE，就不会显示图标了
+        // PLAIN_MESSAGE，不会显示图标了
         JOptionPane.showMessageDialog(this, message, "About RICE Model", JOptionPane.PLAIN_MESSAGE);
+    }
+
+    // --- 功能 5: 自动排期 (Sprint Auto-Plan) ---
+    private void runKnapsackPlanning() {
+        if (taskList.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No tasks to plan!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            // 1. 获取用户输入的精力上限
+            double maxCapacity = Double.parseDouble(tCapacity.getText());
+            
+            // 2. 确保分数是最新的
+            updateScoresAndSort(); 
+
+            // 3. 准备数据：复制一份任务列表并排序
+            // RICE 分数本质就是 (价值 / 成本) 的比率，所以按分数降序排列就是最优的贪心策略
+            List<Task> candidates = new ArrayList<>(taskList);
+            Collections.sort(candidates, (a, b) -> Double.compare(b.score, a.score));
+
+            // 4. 算法核心：挑选任务
+            List<Task> selectedTasks = new ArrayList<>();
+            double currentEffort = 0;
+            double totalScore = 0;
+
+            for (Task t : candidates) {
+                // 如果当前任务能塞进剩余的精力里，就选中它
+                if (currentEffort + t.e <= maxCapacity) {
+                    selectedTasks.add(t);
+                    currentEffort += t.e;
+                    totalScore += t.score;
+                }
+            }
+
+            // 5. 生成漂亮的 HTML 报告
+            StringBuilder sb = new StringBuilder();
+            sb.append("<html><body style='width: 320px; font-family: Segoe UI;'>");
+            sb.append("<h2 style='color: #6f42c1;'>Sprint Plan Suggestion</h2>");
+            sb.append("<p><b>Capacity Limit:</b> ").append(maxCapacity).append(" points</p>");
+            sb.append("<p><b>Used Effort:</b> ").append(currentEffort).append(" points</p>");
+            sb.append("<p><b>Total Value:</b> ").append(String.format("%.1f", totalScore)).append("</p>");
+            sb.append("<hr>");
+            
+            if (selectedTasks.isEmpty()) {
+                sb.append("<p style='color:red;'>No tasks fit within this capacity!</p>");
+            } else {
+                sb.append("<b>✅ Recommended Tasks:</b><br/><ul style='margin-top:5px;'>");
+                for (Task t : selectedTasks) {
+                    sb.append("<li>")
+                      .append("<b>").append(t.name).append("</b>")
+                      .append(" <span style='color:gray; font-size:small;'>(E:").append(t.e)
+                      .append(", Score:").append(String.format("%.1f", t.score)).append(")</span>")
+                      .append("</li>");
+                }
+                sb.append("</ul>");
+                
+                // 显示未被选中的任务数量
+                int ignored = candidates.size() - selectedTasks.size();
+                if (ignored > 0) {
+                    sb.append("<p style='color:gray; font-size:small;'>(").append(ignored).append(" lower-priority tasks skipped)</p>");
+                }
+            }
+            sb.append("</body></html>");
+
+            // 6. 弹窗显示
+            JOptionPane.showMessageDialog(this, sb.toString(), "Auto-Plan Result", JOptionPane.PLAIN_MESSAGE);
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid number for Capacity!", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void updateScoresAndSort() {
