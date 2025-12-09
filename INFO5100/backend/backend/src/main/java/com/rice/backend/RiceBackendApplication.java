@@ -8,6 +8,8 @@ public class RiceBackendApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(RiceBackendApplication.class, args);
+		// This line launches the application.
+		// It starts the embedded Tomcat web server (default port 8080).
 	}
 
 }
