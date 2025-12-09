@@ -19,7 +19,7 @@ public class Task {
     public String owner;
 
     public Task() {}
-
+    // 方便创建任务对象的构造函数
     public Task(String name, double reach, double impact, double confidence, double strategy, double effort, double score, String owner) {
         this.name = name;
         this.reach = reach;
