@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
+// 1. 声明这是一个控制器 2. 所有方法的返回值都会自动转成 JSON 格式
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:5173")
 public class RiceController {
 
+    // 告诉 Spring：请帮我把 UserRepository 的实例注入进来，我要用它查数据库
     @Autowired
     private UserRepository userRepo;
     @Autowired
@@ -16,7 +18,9 @@ public class RiceController {
 
     // --- 1. 用户注册 ---
     @PostMapping("/register")
+    // @RequestBody 把前端传的 JSON 转成 User 对象
     public Map<String, Object> register(@RequestBody User user) {
+        // 创建一个 Map 用来存返回结果
         Map<String, Object> res = new HashMap<>();
         if (userRepo.findByUsername(user.username) != null) {
             res.put("success", false);
@@ -35,6 +39,7 @@ public class RiceController {
         Map<String, Object> res = new HashMap<>();
         User foundUser = userRepo.findByUsername(user.username);
         
+        // 逻辑：用户存在 且 密码匹配 (这里是明文比较，生产环境应加密)
         if (foundUser != null && foundUser.password.equals(user.password)) {
             res.put("success", true);
             res.put("username", foundUser.username); // 返回用户名给前端存着
